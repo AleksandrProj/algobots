@@ -1,0 +1,32 @@
+name: algo-bots
+services:
+  impulse_day_bot:
+    build:
+      context: ..
+      dockerfile: docker/containers_bots/impulse_day_bot.Dockerfile
+    container_name: impulse-day-bot
+    restart: always
+    volumes:
+      - ..:/app
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: algo-bot-postgres
+    restart: always
+    hostname: ${DB_HOST}
+    ports:
+      - ${DB_PORT}:5432
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  redis_data:

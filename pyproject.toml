@@ -1,0 +1,10 @@
+[project]
+name = "impulse-day-bot"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx==0.28.1",
+    "aiohttp==3.13.3",
+    "uvicorn==0.40.0"
+]

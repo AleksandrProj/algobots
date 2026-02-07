@@ -17,3 +17,5 @@ venv
 
 # ENV files
 docker/.env
+docker/containers_bots/*/.env_dev
+docker/containers_bots/*/.env_prod

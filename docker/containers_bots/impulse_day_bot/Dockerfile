@@ -3,6 +3,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ARG user=user_bot
 ARG workdir=/home/bot
+ARG userdir=/home/$user
 
 ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
@@ -16,12 +17,13 @@ RUN apt update --yes --quiet && apt install --yes --quiet --no-install-recommend
 
 RUN useradd $user
 
-RUN mkdir -p $workdir && chown -R $user:$user $workdir
+RUN mkdir -p $workdir && chown -R $user:$user $workdir \
+    && mkdir -p $userdir && chown -R $user:$user $userdir
 
 WORKDIR $workdir
 
 # Entrypoints
-COPY ../../entrypoints/impulse_day_bot_start.sh /entrypoint.sh
+COPY entrypoints/impulse_day_bot_start.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
@@ -31,14 +33,14 @@ COPY pyproject.toml uv.lock .
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --frozen --no-install-project
 
 # Copy data bot in root catalog
-COPY --chown=$user:$user ../../app/bots/impulse_day_bot .
+COPY --chown=$user:$user app/bots/impulse_day_bot .
 
-# Sync the project
+# Lock and sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked
+    uv lock && uv sync --locked
 
 USER $user
 

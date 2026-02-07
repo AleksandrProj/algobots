@@ -1,25 +1,29 @@
 name: algo-bots
 services:
   impulse_day_bot:
+    container_name: impulse-day-bot
     build:
       context: ..
-      dockerfile: docker/containers_bots/impulse_day_bot.Dockerfile
-    container_name: impulse-day-bot
+      dockerfile: docker/containers_bots/impulse_day_bot/Dockerfile
     restart: always
+    env_file:
+      - path: .env
+        required: true
+      - path: containers_bots/impulse_day_bot/.env_dev
+        required: false
     volumes:
       - ..:/app
     depends_on:
       - postgres
 
   postgres:
-    image: postgres:16-alpine
     container_name: algo-bot-postgres
+    image: postgres:16-alpine
     restart: always
+    env_file: ".env"
     hostname: ${DB_HOST}
     ports:
       - ${DB_PORT}:5432
-    env_file:
-      - .env
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

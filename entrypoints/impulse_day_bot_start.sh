@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python start_bot.py
+uv run start_bot.py

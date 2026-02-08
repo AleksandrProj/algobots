@@ -1,17 +1,32 @@
-import os
-import time
-from dotenv import load_dotenv
+import logging
+import asyncio
+
+import aiohttp
+
+from app.bots.impulse_day_bot.controllers import Bot
 
 
-load_dotenv()
+async def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',)
 
+    await start_bot()
 
-def main():
-    print(os.getenv("TBANK_TOKEN"))
-    print(os.getenv("DB_HOST"))
-    print("Starting Impulse Day Bot...")
+async def start_bot():
+    """Запуск бота"""
+    async with aiohttp.ClientSession() as session:
+        await impulse_day_bot(session)
+
+async def impulse_day_bot(session: aiohttp.ClientSession = None):
+    """Бот: Первый импульс дня"""
+    bot = Bot(
+        session_bot=session,
+    )
+
+    await bot.start_bot()
+    await bot.end_bot()
 
 
 if __name__ == "__main__":
-    main()
-    time.sleep(1000)
+    asyncio.run(main())

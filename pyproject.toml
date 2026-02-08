@@ -7,5 +7,14 @@ dependencies = [
     "httpx==0.28.1",
     "aiohttp==3.13.3",
     "uvicorn==0.40.0",
-    "python-dotenv==1.2.1"
+    "python-dotenv==1.2.1",
+    "grpcio",
+    "t-tech-investments"
 ]
+
+[[tool.uv.index]]
+name = "tbank"
+url = "https://opensource.tbank.ru/api/v4/projects/238/packages/pypi/simple/"
+
+[tool.uv.sources]
+t-tech-investments = {index = 'tbank'}

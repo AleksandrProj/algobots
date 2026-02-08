@@ -5,14 +5,14 @@ services:
     build:
       context: ..
       dockerfile: docker/containers_bots/impulse_day_bot/Dockerfile
-    restart: always
+    restart: no
     env_file:
       - path: .env
         required: true
       - path: containers_bots/impulse_day_bot/.env_dev
         required: false
     volumes:
-      - ..:/app
+      - ../app/bots/impulse_day_bot:/app/bots/impulse_day_bot
     depends_on:
       - postgres
 

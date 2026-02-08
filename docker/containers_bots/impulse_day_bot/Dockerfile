@@ -2,13 +2,13 @@ FROM python:3.13-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ARG user=user_bot
-ARG workdir=/home/bot
+ARG name_bot=impulse_day_bot
+ARG workdir=/app/bots/$name_bot
 ARG userdir=/home/$user
 
 ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy \
-    UV_SYSTEM_PYTHON=1
+    UV_LINK_MODE=copy
 
 # Install system packages
 RUN apt update --yes --quiet && apt install --yes --quiet --no-install-recommends \
@@ -36,7 +36,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project
 
 # Copy data bot in root catalog
-COPY --chown=$user:$user app/bots/impulse_day_bot .
+COPY --chown=$user:$user app/bots/impulse_day_bot $workdir
 
 # Lock and sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \

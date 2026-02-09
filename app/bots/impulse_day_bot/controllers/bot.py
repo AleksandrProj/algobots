@@ -4,26 +4,24 @@ import logging
 from aiohttp import ClientSession
 from dotenv import load_dotenv
 
-from t_tech.invest.constants import INVEST_GRPC_API
+from t_tech.invest.constants import INVEST_GRPC_API, INVEST_GRPC_API_SANDBOX
 
-from app.bots.impulse_day_bot.controllers import (
-    UsersServiceBot,
-    InstrumentsServiceBot,)
+from app.bots.impulse_day_bot.utils.common import is_sandbox
+
+from .users_service import UsersServiceBot
+from .instruments_service import InstrumentsServiceBot
 
 
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-
-class Bot(UsersServiceBot, InstrumentsServiceBot):
-    target = INVEST_GRPC_API
+class Bot:
+    target = INVEST_GRPC_API_SANDBOX if is_sandbox else INVEST_GRPC_API
+    token = os.getenv("TBANK_SANDBOX_TOKEN") if is_sandbox else os.getenv("TBANK_TOKEN")
+    url = os.getenv("TBANK_URL_SANDBOX") if is_sandbox else os.getenv("TBANK_URL_PROD")
 
     def __init__(self, session_bot: ClientSession):
         self.session_bot = session_bot
-        self.token = os.getenv("TBANK_TOKEN")
-        self.sandbox_token = os.getenv("TBANK_SANDBOX_TOKEN")
-        self.url = os.getenv("TBANK_URL_PROD")
-        self.sandbox_url = os.getenv("TBANK_URL_SANDBOX")
 
     def __repr__(self):
         return f"Бот для поиска первых импульсов дня"
@@ -32,8 +30,9 @@ class Bot(UsersServiceBot, InstrumentsServiceBot):
         """Запуск бота"""
         logging.info("Start bot...")
 
-        shares = await self.get_shares(self.sandbox_token, INVEST_GRPC_API)
-        logger.info(shares)
+        user = UsersServiceBot(self.token, self.target)
+        user_info = await user.get_user_info()
+        logger.info(user_info)
 
     @staticmethod
     async def end_bot():

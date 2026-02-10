@@ -8,7 +8,6 @@ class UsersServiceBot:
     """
     Сервис для получения информации о пользователе и его счетах
     """
-
     def __init__(self, token, target):
         self.token = token
         self.target = target

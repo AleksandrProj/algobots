@@ -3,6 +3,7 @@ import logging
 
 from aiohttp import ClientSession
 from dotenv import load_dotenv
+from t_tech.invest import FindInstrumentRequest
 
 from t_tech.invest.constants import INVEST_GRPC_API, INVEST_GRPC_API_SANDBOX
 
@@ -30,9 +31,16 @@ class Bot:
         """Запуск бота"""
         logging.info("Start bot...")
 
-        user = UsersServiceBot(self.token, self.target)
-        user_info = await user.get_user_info()
-        logger.info(user_info)
+        share = FindInstrumentRequest(query='moex')
+
+        # instrument = InstrumentsServiceBot(self.token, self.target)
+        # instrument_info = await instrument.find_instrument(share)
+        # logger.info(instrument_info)
+
+
+        # user = UsersServiceBot(self.token, self.target)
+        # user_info = await user.get_user_info()
+        # logger.info(user_info)
 
     @staticmethod
     async def end_bot():
